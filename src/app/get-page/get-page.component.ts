@@ -1,7 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Functions } from '@angular/fire/functions';
-import { catchError, tap } from 'rxjs';
+import { Functions, httpsCallableData } from '@angular/fire/functions';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { catchError, Observable, tap } from 'rxjs';
+
+const white_domains=["news.yahoo.co.jp","www.yahoo.co.jp"]
 
 @Component({
   selector: 'app-get-page',
@@ -9,38 +12,33 @@ import { catchError, tap } from 'rxjs';
   styleUrls: ['./get-page.component.css']
 })
 export class GetPageComponent implements OnInit {
-  src_doc="hoge";
-  curl_service_endpoint="https://apius.reqbin.com/api/v1/requests";
+  public get_curl: (data: any) => Observable<any>;
+  src_doc:SafeHtml="hoge";
+  curl_service_endpoint="https://apius.reqbin.com/";
+  target_url="news.yahoo.co.jp";
 
-  constructor(private fns: Functions) { 
-    this.http.post<any>(this.curl_service_endpoint, this.req_body, httpOptions)
-    .pipe(
-      //catchError(e=>console.log(e))
-      tap(e=>console.log(e))
-    ).subscribe();
+  constructor(private fns: Functions,private sanitizer: DomSanitizer) { 
+    this.get_curl= httpsCallableData(fns, 'curltool', { timeout: 3_000 })
+    //this.http.post<any>(this.curl_service_endpoint, this.req_body, httpOptions)
+
+    this.reload()
   }
 
   ngOnInit(): void {
   }
-
+  update_url(event:Event){
+    console.log(event)
+  }
+  reload(){
+    this.target_url=this.target_url.replace(/^https:\/\//g,"")
+    console.log(this.target_url)
+    this.get_curl({cmd:"curl",url:this.target_url})
+    .pipe(
+      //catchError(e=>console.log(e))
+      tap(content=>{
+        //if(white_domains.includes())
+        this.src_doc=this.sanitizer.bypassSecurityTrustHtml(content)
+      })
+    ).subscribe();
+  }
 }
-
-var httpOptions = {
-  headers: new HttpHeaders({
-    "accept": "*/*",
-    "accept-language": "ja,en;q=0.9,en-GB;q=0.8,en-US;q=0.7,fr;q=0.6",
-    "cache-control": "no-cache, no-store, must-revalidate",
-    "content-type": "application/json",
-    "expires": "0",
-    "pragma": "no-cache",
-    "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"100\", \"Microsoft Edge\";v=\"100\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "empty",
-  //  "sec-fetch-mode": "cors",
-  //  "sec-fetch-site": "same-site",
-   "secure": "false",
-    "x-token": "",
-    'Access-Control-Allow-Origin': '*',
-  })
-};

@@ -1,2 +1,6 @@
-<p>get-page works!</p>
-<iframe sandbox srcdoc="{{src_doc}}"></iframe>
+<div>
+    <span>Target URL :</span> 
+    <input matInput type="text" [(ngModel)]="target_url" value="{{target_url}}" >
+    <button (click)="reload()">Go</button>
+</div>
+<iframe  [srcdoc]="src_doc"></iframe>
