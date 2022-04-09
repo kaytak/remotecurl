@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "knowledge-base1": {
+      "hosting": {
+        "remote-curl": [
+          "my-cam"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "knowledge-base1"
+  }
+}
