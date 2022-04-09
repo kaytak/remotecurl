@@ -17,9 +17,16 @@ export class GetPageComponent implements OnInit {
   curl_service_endpoint="https://apius.reqbin.com/";
   target_url="news.yahoo.co.jp";
 
-  constructor(private fns: Functions,private sanitizer: DomSanitizer) { 
+  //function_url="http://localhost:5021/knowledge-base1/asia-northeast1/curltool"
+  function_url="https://asia-northeast1-knowledge-base1.cloudfunctions.net/curltool"
+
+  constructor(private fns: Functions,private sanitizer: DomSanitizer,private http:HttpClient) { 
     this.get_curl= httpsCallableData(fns, 'curltool', { timeout: 3_000 })
-    //this.http.post<any>(this.curl_service_endpoint, this.req_body, httpOptions)
+    /*this.http.get(this.function_url+"?q="+this.target_url,{responseType: 'text'})
+    .pipe(
+      tap(e=>console.log(e))
+    )
+    .subscribe()*/
 
     this.reload()
   }
@@ -32,7 +39,8 @@ export class GetPageComponent implements OnInit {
   reload(){
     this.target_url=this.target_url.replace(/^https:\/\//g,"")
     console.log(this.target_url)
-    this.get_curl({cmd:"curl",url:this.target_url})
+    //this.get_curl({cmd:"curl",url:this.target_url})
+    this.http.get(this.function_url+"?q="+this.target_url,{responseType: 'text'})
     .pipe(
       //catchError(e=>console.log(e))
       tap(content=>{
