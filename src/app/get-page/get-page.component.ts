@@ -17,8 +17,8 @@ export class GetPageComponent implements OnInit {
   curl_service_endpoint="https://apius.reqbin.com/";
   target_url="news.yahoo.co.jp";
 
-  function_url="http://localhost:5021/knowledge-base1/asia-northeast1/curltool"
-  //function_url="https://asia-northeast1-knowledge-base1.cloudfunctions.net/curltool"
+  //function_url="http://localhost:5021/knowledge-base1/asia-northeast1/curltool"
+  function_url="https://asia-northeast1-knowledge-base1.cloudfunctions.net/curltool"
 
   constructor(private fns: Functions,private sanitizer: DomSanitizer,private http:HttpClient) { 
     this.get_curl= httpsCallableData(fns, 'curltool', { timeout: 3_000 })
