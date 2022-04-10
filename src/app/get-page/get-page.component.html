@@ -3,4 +3,4 @@
     <input matInput type="text" [(ngModel)]="target_url" value="{{target_url}}" >
     <button (click)="reload()">Go</button>
 </div>
-<iframe  [srcdoc]="src_doc"></iframe>
+<iframe  [srcdoc]="src_doc" (load)="siteLoaded()"></iframe>
